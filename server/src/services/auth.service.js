@@ -1,16 +1,15 @@
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.model.js';
 import ApiError from '../utils/ApiError.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/generateTokens.js';
 
 export const registerUser = async ({ name, email, password }) => {
-  // Check if a user with this email already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, 'A user with this email already exists');
   }
 
-  // Hash the password before storing it — never store plain text
   const passwordHash = await bcrypt.hash(password, 10);
 
   const user = await User.create({
@@ -36,9 +35,41 @@ export const loginUser = async ({ email, password }) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  // Store the refresh token on the user document (supports multiple devices)
   user.refreshTokens.push(refreshToken);
   await user.save();
 
   return { user, accessToken, refreshToken };
+};
+
+export const logoutUser = async ({ userId, refreshToken }) => {
+  const user = await User.findById(userId);
+  if (!user) return;
+
+  user.refreshTokens = user.refreshTokens.filter((t) => t !== refreshToken);
+  await user.save();
+};
+
+export const refreshAccessToken = async (incomingRefreshToken) => {
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, 'Refresh token missing');
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+  } catch (error) {
+    throw new ApiError(401, 'Invalid or expired refresh token');
+  }
+
+  const user = await User.findById(decoded._id);
+  if (!user) {
+    throw new ApiError(401, 'User no longer exists');
+  }
+
+  if (!user.refreshTokens.includes(incomingRefreshToken)) {
+    throw new ApiError(401, 'Refresh token is invalid or has been revoked');
+  }
+
+  const newAccessToken = generateAccessToken(user);
+  return newAccessToken;
 };

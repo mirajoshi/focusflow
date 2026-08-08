@@ -1,13 +1,18 @@
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiResponse from '../utils/ApiResponse.js';
-import { registerUser, loginUser } from '../services/auth.service.js';
+import { registerUser, loginUser, logoutUser, refreshAccessToken } from '../services/auth.service.js';
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+};
 
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   const user = await registerUser({ name, email, password });
 
-  // Never send passwordHash back to the client, even hashed
   const safeUser = {
     _id: user._id,
     name: user.name,
@@ -28,16 +33,27 @@ export const login = asyncHandler(async (req, res) => {
     email: user.email,
   };
 
-  // Set refresh token as httpOnly cookie — inaccessible to JS, protecting against XSS
-  const cookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-  };
+  res
+    .status(200)
+    .cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 })
+    .json(new ApiResponse(200, { user: safeUser, accessToken }, 'Login successful'));
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  await logoutUser({ userId: req.user._id, refreshToken });
 
   res
     .status(200)
-    .cookie('refreshToken', refreshToken, cookieOptions)
-    .json(new ApiResponse(200, { user: safeUser, accessToken }, 'Login successful'));
+    .clearCookie('refreshToken', cookieOptions)
+    .json(new ApiResponse(200, {}, 'Logout successful'));
+});
+
+export const refreshToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies?.refreshToken;
+
+  const newAccessToken = await refreshAccessToken(incomingRefreshToken);
+
+  res.status(200).json(new ApiResponse(200, { accessToken: newAccessToken }, 'Access token refreshed'));
 });
