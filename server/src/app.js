@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
+import todoRoutes from './routes/todo.routes.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 // Mount auth routes at /api/v1/auth
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/todos', todoRoutes);
 
 // Temporary test route to confirm the server works
 app.get('/api/v1/health', (req, res) => {
