@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import errorHandler from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -20,5 +21,8 @@ app.use(cookieParser());
 app.get('/api/v1/health', (req, res) => {
   res.json({ success: true, message: 'Server is healthy' });
 });
+
+// Error handling middleware - must be registered LAST
+app.use(errorHandler);
 
 export default app;
