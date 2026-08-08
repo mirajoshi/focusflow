@@ -1,0 +1,24 @@
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+const app = express();
+
+// Allow requests from our frontend, and allow cookies to be sent
+app.use(cors({
+  origin: 'http://localhost:5173', // Vite's default dev port
+  credentials: true,
+}));
+
+// Parse incoming JSON request bodies (so req.body works)
+app.use(express.json());
+
+// Parse cookies from incoming requests (so req.cookies works)
+app.use(cookieParser());
+
+// Temporary test route to confirm the server works
+app.get('/api/v1/health', (req, res) => {
+  res.json({ success: true, message: 'Server is healthy' });
+});
+
+export default app;
