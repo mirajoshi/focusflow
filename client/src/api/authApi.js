@@ -21,6 +21,6 @@ export const refreshTokenRequest = async () => {
 };
 
 export const getMeRequest = async () => {
-  const response = await axiosInstance.get('/auth/me');
+  const response = await axiosInstance.get('/users/me');
   return response.data;
 };
