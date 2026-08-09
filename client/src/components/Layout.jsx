@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 
 function Layout({ children }) {
@@ -16,6 +16,9 @@ function Layout({ children }) {
         <span className="font-display text-xl text-paper">FocusFlow</span>
         <div className="flex items-center gap-4">
           {user && <span className="text-sm text-muted">{user.name}</span>}
+          <Link to="/settings" className="text-sm text-muted hover:text-paper">
+            Settings
+          </Link>
           <button
             onClick={handleLogout}
             className="text-sm text-accent hover:text-accent-hover"

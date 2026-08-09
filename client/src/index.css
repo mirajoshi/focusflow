@@ -9,10 +9,20 @@
   --color-muted: #8a8578;
   --color-surface: #1f1c24;
   --color-border: #2e2a33;
+  --color-danger: #a4442e;
+  --color-danger-hover: #8f3a26;
 
   --font-display: "Fraunces", serif;
   --font-body: "Public Sans", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
+}
+
+html.theme-light {
+  --color-ink: #f0ebe1;
+  --color-paper: #17151b;
+  --color-surface: #e5ded0;
+  --color-border: #d4cbb8;
+  --color-muted: #6b675c;
 }
 
 body {

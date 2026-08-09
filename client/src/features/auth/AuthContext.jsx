@@ -14,16 +14,29 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessTokenState] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [theme, setTheme] = useState('dark');
 
   const updateAccessToken = (token) => {
     setAccessTokenState(token);
     setAxiosAccessToken(token);
   };
 
+  // Apply the theme class to <html> whenever it changes
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('theme-light');
+    } else {
+      document.documentElement.classList.remove('theme-light');
+    }
+  }, [theme]);
+
   const login = async ({ email, password }) => {
     const result = await loginRequest({ email, password });
     setUser(result.data.user);
     updateAccessToken(result.data.accessToken);
+    if (result.data.user.preferences?.theme) {
+      setTheme(result.data.user.preferences.theme);
+    }
   };
 
   const register = async ({ name, email, password }) => {
@@ -47,6 +60,9 @@ export function AuthProvider({ children }) {
         updateAccessToken(result.data.accessToken);
         const meResult = await getMeRequest();
         setUser(meResult.data);
+        if (meResult.data.preferences?.theme) {
+          setTheme(meResult.data.preferences.theme);
+        }
       } catch (error) {
         // No valid refresh token - user simply isn't logged in, that's fine
       } finally {
@@ -69,6 +85,8 @@ export function AuthProvider({ children }) {
     accessToken,
     isAuthenticated: !!accessToken,
     isLoading,
+    theme,
+    setTheme,
     login,
     register,
     logout,

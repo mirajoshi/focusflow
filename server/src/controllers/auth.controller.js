@@ -28,10 +28,11 @@ export const login = asyncHandler(async (req, res) => {
   const { user, accessToken, refreshToken } = await loginUser({ email, password });
 
   const safeUser = {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-  };
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      preferences: user.preferences,
+    };
 
   res
     .status(200)
