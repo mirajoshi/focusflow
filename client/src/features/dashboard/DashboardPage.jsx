@@ -4,6 +4,7 @@ import TodoList from './TodoList.jsx';
 import HabitList from './HabitList.jsx';
 import PomodoroTimer from './PomodoroTimer.jsx';
 import PlannerList from './PlannerList.jsx';
+import StatsOverview from './StatsOverview.jsx';
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ function DashboardPage() {
       </h1>
       <p className="text-muted mb-8">Here's your overview for today.</p>
       <div className="grid gap-8 md:grid-cols-3">
+        <StatsOverview />
         <PomodoroTimer />
         <TodoList />
         <HabitList />
