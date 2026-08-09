@@ -4,6 +4,7 @@ import {
   registerRequest,
   logoutRequest,
   refreshTokenRequest,
+  getMeRequest,
 } from '../../api/authApi.js';
 import { setAccessToken as setAxiosAccessToken, setOnTokenRefreshFailed } from '../../api/axiosInstance.js';
 
@@ -14,7 +15,6 @@ export function AuthProvider({ children }) {
   const [accessToken, setAccessTokenState] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Keep the axios module-level token in sync whenever it changes here
   const updateAccessToken = (token) => {
     setAccessTokenState(token);
     setAxiosAccessToken(token);
@@ -28,7 +28,6 @@ export function AuthProvider({ children }) {
 
   const register = async ({ name, email, password }) => {
     await registerRequest({ name, email, password });
-    // Registration does not log the user in automatically (matches backend design)
   };
 
   const logout = async () => {
@@ -41,14 +40,13 @@ export function AuthProvider({ children }) {
     updateAccessToken(null);
   };
 
-  // On app load, try to silently restore a session using the refresh token cookie
   useEffect(() => {
     const restoreSession = async () => {
       try {
         const result = await refreshTokenRequest();
         updateAccessToken(result.data.accessToken);
-        // Note: we don't have user details from refresh alone yet -
-        // we'll fetch them via /auth/me next
+        const meResult = await getMeRequest();
+        setUser(meResult.data);
       } catch (error) {
         // No valid refresh token - user simply isn't logged in, that's fine
       } finally {
@@ -59,8 +57,6 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
-  // If a silent refresh ever fails later (e.g., refresh token expired while using the app),
-  // log the user out cleanly
   useEffect(() => {
     setOnTokenRefreshFailed(() => {
       setUser(null);

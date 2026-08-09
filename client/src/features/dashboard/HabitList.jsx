@@ -30,7 +30,7 @@ function HabitList() {
   const habits = data?.data || [];
 
   return (
-    <div className="max-w-lg">
+    <div className="max-w-lg p-6 rounded bg-surface border border-border">
       <h2 className="font-display text-2xl text-paper mb-4">Habits</h2>
 
       <form onSubmit={handleAdd} className="flex gap-2 mb-6">
@@ -39,7 +39,7 @@ function HabitList() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Add a new habit..."
-          className="flex-1 px-3 py-2 rounded bg-surface border border-border text-paper focus:outline-none focus:border-accent"
+          className="flex-1 px-3 py-2 rounded bg-ink border border-border text-paper focus:outline-none focus:border-accent"
         />
         <button
           type="submit"
@@ -59,7 +59,7 @@ function HabitList() {
             return (
               <li
                 key={habit._id}
-                className="flex items-center gap-3 px-3 py-2 rounded bg-surface border border-border"
+                className="flex items-center gap-3 px-3 py-2 rounded bg-ink border border-border"
               >
                 <span className="text-xl">{habit.icon}</span>
                 <span className="flex-1 text-paper">{habit.name}</span>
