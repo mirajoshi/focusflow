@@ -1,8 +1,18 @@
+import Layout from '../../components/Layout.jsx';
+import { useAuth } from '../auth/AuthContext.jsx';
+import TodoList from './TodoList.jsx';
+
 function DashboardPage() {
+  const { user } = useAuth();
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="font-display text-3xl text-paper">Dashboard Page</h1>
-    </div>
+    <Layout>
+      <h1 className="font-display text-3xl text-paper mb-2">
+        Welcome, {user?.name}
+      </h1>
+      <p className="text-muted mb-8">Here's your overview for today.</p>
+      <TodoList />
+    </Layout>
   );
 }
 
