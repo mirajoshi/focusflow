@@ -3,6 +3,7 @@ import { useAuth } from '../auth/AuthContext.jsx';
 import TodoList from './TodoList.jsx';
 import HabitList from './HabitList.jsx';
 import PomodoroTimer from './PomodoroTimer.jsx';
+import PlannerList from './PlannerList.jsx';
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ function DashboardPage() {
         <PomodoroTimer />
         <TodoList />
         <HabitList />
+        <PlannerList />
       </div>
     </Layout>
   );
