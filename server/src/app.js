@@ -7,6 +7,7 @@ import todoRoutes from './routes/todo.routes.js';
 import habitRoutes from './routes/habit.routes.js';
 import pomodoroRoutes from './routes/pomodoro.routes.js';
 import plannerRoutes from './routes/planner.routes.js';
+import statsRoutes from './routes/stats.routes.js';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api/v1/todos', todoRoutes);
 app.use('/api/v1/habits', habitRoutes);
 app.use('/api/v1/pomodoro', pomodoroRoutes);
 app.use('/api/v1/planner', plannerRoutes);
+app.use('/api/v1/stats', statsRoutes);
 
 // Temporary test route to confirm the server works
 app.get('/api/v1/health', (req, res) => {
