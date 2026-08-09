@@ -1,6 +1,7 @@
 import Layout from '../../components/Layout.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import TodoList from './TodoList.jsx';
+import HabitList from './HabitList.jsx';
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -11,7 +12,10 @@ function DashboardPage() {
         Welcome, {user?.name}
       </h1>
       <p className="text-muted mb-8">Here's your overview for today.</p>
-      <TodoList />
+      <div className="grid gap-8 md:grid-cols-2">
+        <TodoList />
+        <HabitList />
+      </div>
     </Layout>
   );
 }
