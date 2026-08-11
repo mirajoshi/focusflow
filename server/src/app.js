@@ -14,7 +14,7 @@ const app = express();
 
 // Allow requests from our frontend, and allow cookies to be sent
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://focusflow-kohl-alpha.vercel.app'],
   credentials: true,
 }));
 
